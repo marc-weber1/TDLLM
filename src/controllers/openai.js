@@ -9,7 +9,7 @@ const ai_configuration = new Configuration({
 const openai = new OpenAIApi(ai_configuration);
 
 // Uses MAX_ITERATIONS (number of times it tries to gen), OPENAI_MODEL (e.g. gpt-3.5-turbo), and OPENAI_KEY
-async function generate_code_with_tests(prompt, tests){
+async function generate_code_with_tests(image, prompt, tests){
 
     const messages = [
         {
@@ -37,7 +37,7 @@ async function generate_code_with_tests(prompt, tests){
 
         // Try running the code
 
-        const [stdout, stderr, exit_code] = await run_podman(code);
+        const [stdout, stderr, exit_code] = await run_podman(code, image);
 
         if( exit_code != 0 ){
             messages.append({

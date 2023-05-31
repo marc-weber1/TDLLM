@@ -9,10 +9,10 @@ const router = express.Router();
 router.post('/run', async (req, res) => {
     try {
         console.log(req.body);
-        // Get the Node.js code from the request body
         const code = req.body.code;
+        const image = req.body.image;
 
-        const [stdout, stderr, exit_code] = await run_podman(code);
+        const [stdout, stderr, exit_code] = await run_podman(code, image);
         
         console.log({ stdout, stderr, exit_code });
         res.json({ stdout, stderr, exit_code });
@@ -25,7 +25,12 @@ router.post('/run', async (req, res) => {
 
 router.post('/generate', async (req, res) => {
     try{
-        const resp = await generate_code_with_tests();
+        console.log(req.body);
+        const image = req.body.image;
+        const prompt = req.body.prompt;
+        const tests = req.body.tests;
+
+        const resp = await generate_code_with_tests(image, prompt, tests);
         res.json(resp);
     }
     catch(err){

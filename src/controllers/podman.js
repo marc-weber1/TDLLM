@@ -4,10 +4,19 @@ import { promisify } from 'util';
 
 const setTimeoutPromise = promisify(setTimeout);
 
+const allowedImages = [
+    'node:18-alpine',
+];
+
 // Uses MEMORY_LIMIT (e.g. 256m - https://docs.podman.io/en/latest/markdown/podman-run.1.html#memory-m-number-unit) and TIME_LIMIT (in ms)
-async function run_podman(code, container){
+async function run_podman(code, image){
+    // Restrict the image to the allowed ones to avoid DoS
+    if(!allowedImages.includes(image)){
+        throw new Error('Invalid image. Allowed images:\n' + allowedImages.join('\n'));
+    }
+
     // Spawn the podman image with a piped stdin, stdout, and stderr
-    const podman = spawn('podman', ['run', '-m', process.env.MEMORY_LIMIT, '-i', container], {
+    const podman = spawn('podman', ['run', '-m', process.env.MEMORY_LIMIT, '-i', image], {
         stdio: ['pipe', 'pipe', 'pipe']
     });
 
