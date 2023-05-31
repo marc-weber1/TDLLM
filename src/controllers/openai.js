@@ -1,6 +1,6 @@
 import { Configuration, OpenAIApi} from 'openai';
 
-import { run_podman } from 'podman.js';
+import { run_podman } from './podman.js';
 
 
 const ai_configuration = new Configuration({
@@ -22,7 +22,7 @@ async function generate_code_with_tests(prompt, tests){
         }
     ];
 
-    for(let i=0; i<process.env.MAX_ITERATIONS; i++){ // Loop until it compiles & passes all tests
+    for(let iterations=0; iterations<process.env.MAX_ITERATIONS; iterations++){ // Loop until it compiles & passes all tests
 
         // Generate prompt with chatgpt
 
@@ -59,7 +59,7 @@ async function generate_code_with_tests(prompt, tests){
         // ...
 
 
-        return {code, stdout, stderr, exit_code};
+        return {code, stdout, stderr, exit_code, iterations};
     }
 
     throw new Error("Max iterations exceeded.");

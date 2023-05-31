@@ -26,6 +26,24 @@ The API and tests will run in a sandbox, so the endgoal is an API that can be sa
 
 Please report ANY vulnerabilities or attack vectors to the github issues, or my DMs if they are severe.
 
+## Setup
+
+Install podman. Make a .env file with these variables:
+```
+PORT=80
+MEMORY_LIMIT=256m
+TIME_LIMIT=10000
+MAX_ITERATIONS=10
+OPENAI_MODEL=gpt-3.5-turbo
+OPENAI_KEY=...
+```
+or include them in your environment.
+
+Run:
+```
+node index.js
+```
+
 ## Available test variables
 
 stdout
