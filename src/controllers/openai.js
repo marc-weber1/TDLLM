@@ -3,15 +3,15 @@ import { Configuration, OpenAIApi} from 'openai';
 import { run_podman } from './podman.js';
 
 
-const ai_configuration = new Configuration({
-    apiKey: process.env.OPENAI_KEY,
-});
-const openai = new OpenAIApi(ai_configuration);
-
 // Uses MAX_ITERATIONS (number of times it tries to gen), OPENAI_MODEL (e.g. gpt-3.5-turbo), and OPENAI_KEY
 async function generate_code_with_tests(image, prompt, tests){
 
-    const messages = [
+    const ai_configuration = new Configuration({
+        apiKey: process.env.OPENAI_KEY,
+    });
+    const openai = new OpenAIApi(ai_configuration);
+
+    var messages = [
         {
             "role": "system",
             "content": "You are a code generator that only generates code that can be parsed by a NodeJS runtime with no errors, and all plain language must be in comments. You write clean, organized code with helpful comments that can be understood by non-programmers."
@@ -49,6 +49,8 @@ async function generate_code_with_tests(image, prompt, tests){
                 "role": "user",
                 "content": "I get the following error: " + stderr
             });
+
+            console.log("Error running code: " + error);
 
             continue;
         }

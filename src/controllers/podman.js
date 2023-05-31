@@ -12,7 +12,7 @@ const allowedImages = [
 async function run_podman(code, image){
     // Restrict the image to the allowed ones to avoid DoS
     if(!allowedImages.includes(image)){
-        throw new Error('Invalid image. Allowed images:\n' + allowedImages.join('\n'));
+        throw new Error('Invalid image. Allowed images: ' + allowedImages.join(', '));
     }
 
     // Spawn the podman image with a piped stdin, stdout, and stderr
