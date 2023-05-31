@@ -31,7 +31,6 @@ async function generate_code_with_tests(image, prompt, tests){
             messages
         });
         console.log({result: ai_response.data.choices[0].message.content});
-        console.log('');
         var code = ai_response.data.choices[0].message.content;
 
 
@@ -50,15 +49,34 @@ async function generate_code_with_tests(image, prompt, tests){
                 "content": "I get the following error: " + stderr
             });
 
-            console.log("Error running code: " + error);
-
             continue;
         }
 
 
         // Try running tests on the code
 
-        // ...
+        const tests_with_vars =
+            `const stdout = ` + stdout + // please don't do this
+            `;\nconst stderr = ` + stderr + // think about the consequences
+            `;\nconst exit_code = ` + exit_code + // of your actions
+            `;\n` + tests; // for only a few moments I am begging
+        const [test_stdout, test_stderr, test_exit_code] = await run_podman(tests_with_vars, 'mocha:latest');
+
+        console.log({test_stdout, test_stderr, test_exit_code});
+
+        if(test_exit_code != 0){
+            messages.append({
+                "role": "assistant",
+                "content": code
+            });
+    
+            messages.append({
+                "role": "user",
+                "content": "This fails the following tests: " + stderr
+            });
+
+            continue;
+        }
 
 
         return {code, stdout, stderr, exit_code, iterations};

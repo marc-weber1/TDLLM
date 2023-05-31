@@ -6,11 +6,12 @@ const setTimeoutPromise = promisify(setTimeout);
 
 const allowedImages = [
     'node:18-alpine',
+    'mocha:latest'
 ];
 
 // Uses MEMORY_LIMIT (e.g. 256m - https://docs.podman.io/en/latest/markdown/podman-run.1.html#memory-m-number-unit) and TIME_LIMIT (in ms)
 async function run_podman(code, image){
-    // Restrict the image to the allowed ones to avoid DoS
+    // Restrict the image to the allowed ones to avoid DoS and prevent injection
     if(!allowedImages.includes(image)){
         throw new Error('Invalid image. Allowed images: ' + allowedImages.join(', '));
     }

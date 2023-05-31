@@ -28,7 +28,7 @@ Please report ANY vulnerabilities or attack vectors to the github issues, or my 
 
 ## Setup
 
-Install podman. Make a .env file with these variables:
+Install podman and nodeJS. Make a .env file with these variables:
 ```
 PORT=80
 MEMORY_LIMIT=256m
@@ -41,7 +41,8 @@ or include them in your environment.
 
 Run:
 ```
-node index.js
+podman build -t mocha -f mocha.dockerfile .
+node server.js
 ```
 
 ## Available test variables

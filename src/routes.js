@@ -34,7 +34,7 @@ router.post('/generate', async (req, res) => {
         res.json(resp);
     }
     catch(err){
-        console.error(JSON.stringify(err, 0, 2));
+        console.error(err);
         res.status(500).send({error: err.message});
     }
 });
