@@ -11,6 +11,6 @@ app.use(express.json());
 
 app.use('/', routes);
 
-app.listen(80, '0.0.0.0', () => {
-    console.log(`Server listening at http://localhost:80`)
+app.listen(process.env.PORT, '0.0.0.0', () => {
+    console.log(`Server listening at http://localhost:${process.env.PORT}`)
 });
