@@ -9,11 +9,10 @@ TDLLM is an API that helps an LLM write code based on a prompt, and a series of 
 
     "tests": """
 
-        const {
-            createHash,
-        } = await import('node:crypto');
+        const crypto = require('crypto');
+        const assert = require('assert');
 
-        const hash = createHash('sha256');
+        const hash = crypto.createHash('sha256');
 
         it('Should generate the hash correctly', function() {
             assert( stdout.trim() == hash.update('bananas').digest('hex') );
