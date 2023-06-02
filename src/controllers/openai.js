@@ -55,11 +55,11 @@ async function generate_code_with_tests(image, prompt, tests){
 
         // Try running tests on the code
 
-        const tests_with_vars =
-            `const stdout = "` + stdout.trim() + // please don't do this
-            `";\nconst stderr = "` + stderr.trim() + // think about the consequences
-            `";\nconst exit_code = ` + exit_code + // of your actions
-            `;\n` + tests; // for only a few moments I am begging
+        const tests_with_vars = // Does JSON stringify prevent injection?
+            `const stdout = ${JSON.stringify(stdout)}
+             const stderr = ${JSON.stringify(stderr)}
+             const exit_code = ${exit_code}
+            ` + tests;
         const [test_stdout, test_stderr, test_exit_code] = await run_podman(tests_with_vars, 'mocha:latest');
 
         console.log({test_stdout, test_stderr, test_exit_code});
