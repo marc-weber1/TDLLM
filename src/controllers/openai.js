@@ -22,7 +22,7 @@ async function generate_code_with_tests(image, prompt, tests){
         }
     ];
 
-    for(let iterations=0; iterations<process.env.MAX_ITERATIONS; iterations++){ // Loop until it compiles & passes all tests
+    for(let iterations=1; iterations<=process.env.MAX_ITERATIONS; iterations++){ // Loop until it compiles & passes all tests
 
         // Generate prompt with chatgpt
 
