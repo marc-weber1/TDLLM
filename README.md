@@ -25,7 +25,7 @@ POST /generate_and_test
         const hash = crypto.createHash('sha256');
 
         it('Should generate the hash correctly', function() {
-            assert( stdout.trim() == hash.update('bananas').digest('hex') );
+            assert( run().stdout.trim() == hash.update('bananas').digest('hex') );
         });
 
     """
@@ -40,9 +40,34 @@ Please report ANY vulnerabilities or attack vectors to the github issues, or my 
 
 Use the server endpoint if you need to generate APIs instead, e.g. an ExpressJS API, and test it over the network.
 ```
-POST /generate_server_with_tests
+POST /generate_server_and_test
 {
-    "image": "node:18-alpine"
+    "image": "node:18-alpine",
+
+    "prompts": [
+        {
+            "role": "system",
+            "content": "You are a code generator that only generates code that can be parsed by a NodeJS runtime with no errors, and all plain language must be in comments. You write clean, organized code with helpful comments that can be understood by non-programmers."
+        },
+        {
+            "role": "user",
+            "content": "Write me an expressJS api with a POST endpoint /multiply that takes a body like {'number': 3} and returns a number two times the one given, like {'number': 6}."
+        }
+    ],
+
+    "tests": """
+
+        const axios = require('axios');
+        const assert = require('assert');
+
+        axios.post('/user', {
+            number: 6
+        })
+        .then(function (response) {
+            assert( response.data.number == 12 );
+        })
+
+    """
 }
 ```
 
