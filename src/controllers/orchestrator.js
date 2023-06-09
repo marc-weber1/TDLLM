@@ -3,7 +3,7 @@ import { generate } from './openai.js';
 
 
 // Uses MAX_ITERATIONS (number of times it tries to gen)
-async function generate_code_with_tests(image, prompts, tests){
+async function generate_program_with_tests(image, prompts, tests){
 
     var messages = [...prompts]; // Copy the array
 
@@ -12,59 +12,74 @@ async function generate_code_with_tests(image, prompts, tests){
 
         // Generate code with chatgpt
 
-        var code = await generate(messages);
+        var generated_code = await generate(messages);
+
+
+        // Define the function that runs a process inside the container
+
+        var code = `
+        const { spawn } = require('child_process');
+        var generated_code = ` + JSON.stringify(generated_code) + `
+
+        async function run(){
+            // Spawn the process with a piped stdin, stdout, and stderr
+            const process = spawn('node', [...arguments], {  // Use arguments from function
+                stdio: 'pipe'
+            });
+
+            // Send the code to the child process's stdin
+            process.stdin.write(generated_code);
+            process.stdin.end();
+
+            // Collect any output from the child process's stdout and stderr
+            let stdout = '';
+            let stderr = '';
+            var processPromise = new Promise((resolveFunc) => {
+                process.stdout.on("data", data => {
+                    stdout += data.toString();
+                });
+                process.stderr.on("data", data => {
+                    stderr += data.toString();
+                });
+                process.on("exit", (exit_code) => {
+                    resolveFunc(exit_code);
+                });
+            });
+
+            var exit_code = await processPromise;
+
+            return { stdout, stderr, exit_code };
+        }
+        ` + tests;
+
+        console.log(code);
 
 
         // Try running the code
 
-        const [stdout, stderr, exit_code] = await run_podman(code, image);
+        const [stdout, stderr, exit_code] = await run_podman(code, 'mocha:latest');
+
+        console.log({stdout, stderr, exit_code});
 
         if( exit_code != 0 ){
             messages.push({
                 "role": "assistant",
                 "content": code
             });
-    
+
             messages.push({
                 "role": "user",
-                "content": "I get the following error: " + stderr
+                "content": "I get the following error: " + stdout
             });
 
             continue;
         }
 
-
-        // Try running tests on the code
-
-        const tests_with_vars = // Does JSON stringify prevent injection?
-            `const stdout = ${JSON.stringify(stdout)}
-             const stderr = ${JSON.stringify(stderr)}
-             const exit_code = ${exit_code}
-            ` + tests;
-        const [test_stdout, test_stderr, test_exit_code] = await run_podman(tests_with_vars, 'mocha:latest');
-
-        console.log({test_stdout, test_stderr, test_exit_code});
-
-        if(test_exit_code != 0){
-            messages.push({
-                "role": "assistant",
-                "content": code
-            });
-    
-            messages.push({
-                "role": "user",
-                "content": "This fails the following tests: " + stderr
-            });
-
-            continue;
-        }
-
-
-        return {code, stdout, stderr, exit_code, iterations};
+        return {code: generated_code, stdout, stderr, exit_code, iterations};
     }
 
     throw new Error("Max iterations exceeded.");
 }
 
 
-export { generate_code_with_tests };
+export { generate_program_with_tests };

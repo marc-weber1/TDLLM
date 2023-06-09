@@ -17,18 +17,19 @@ POST /generate_and_test
         }
     ],
 
-    "tests": """
+    "tests": `
 
         const crypto = require('crypto');
         const assert = require('assert');
 
         const hash = crypto.createHash('sha256');
 
-        it('Should generate the hash correctly', function() {
-            assert( run().stdout.trim() == hash.update('bananas').digest('hex') );
+        it('Should generate the hash correctly', async function() {
+            var result = await run();
+            assert( result.stdout.trim() == hash.update('bananas').digest('hex') );
         });
 
-    """
+    `
 }
 ```
 The API and tests will run in a sandbox, so the endgoal is an API that can be safely run by users that should not have access to the server itself, even if the server is run by root/a sudoer. That said, please run the server as its own user for safety.
@@ -55,19 +56,20 @@ POST /generate_server_and_test
         }
     ],
 
-    "tests": """
+    "tests": `
 
-        const axios = require('axios');
+        const path = require('path');
         const assert = require('assert');
+        const axios = require('axios');
 
-        axios.post('/user', {
+        axios.post(path.join(server_uri, 'multiply'), {
             number: 6
         })
         .then(function (response) {
             assert( response.data.number == 12 );
         })
 
-    """
+    `
 }
 ```
 

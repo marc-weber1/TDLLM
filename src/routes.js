@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { run_podman } from './controllers/podman.js';
-import { generate_code_with_tests } from './controllers/orchestrator.js'
+import { generate_program_with_tests } from './controllers/orchestrator.js'
 
 
 const router = express.Router();
@@ -30,7 +30,7 @@ router.post('/generate_and_test', async (req, res) => {
         const prompts = req.body.prompts;
         const tests = req.body.tests;
 
-        const resp = await generate_code_with_tests(image, prompts, tests);
+        const resp = await generate_program_with_tests(image, prompts, tests);
         res.json(resp);
     }
     catch(err){

@@ -18,7 +18,7 @@ async function run_podman(code, image){
 
     // Spawn the podman image with a piped stdin, stdout, and stderr
     const podman = spawn('podman', ['run', '-m', process.env.MEMORY_LIMIT, '-i', image], {
-        stdio: ['pipe', 'pipe', 'pipe']
+        stdio: 'pipe'
     });
 
     // Send the code to the child process's stdin
