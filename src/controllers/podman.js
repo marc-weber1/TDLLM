@@ -82,4 +82,4 @@ function run_server_podman(code, image, pod_name = 'new'){
 }
 
 
-export { run_podman };
+export { run_podman, run_server_podman };

@@ -1,4 +1,4 @@
-import { run_podman } from './podman.js';
+import { run_podman, run_server_podman } from './podman.js';
 import { generate } from './openai.js';
 
 
@@ -89,13 +89,23 @@ async function generate_server_with_tests(image, prompts, tests){
     for(let iterations=1; iterations<=process.env.MAX_ITERATIONS; iterations++){ // Loop until it compiles & passes all tests
 
         // Generate code with chatgpt
+        var generated_code = await generate(messages);
 
-        //var generated_code = await generate(messages);
-
-
-        // Generate random pod name for the server and tests to run in
-        var pod_name = Math.random().toString(36).substring(7);
+        // Run code in a new server
+        var server_info = run_server_podman(generated_code, image);
         
+        // Run tests in the same pod as the new server
+        var test_code = `
+            var server_uri = 'localhost'
+        ` + tests;
+        var [test_stdout, test_stderr, test_exit_code] = await run_podman(test_code, 'mocha:latest', server_info.pod_name);
+        console.log({test_stdout, test_stderr, test_exit_code});
+
+        if(test_exit_code != 0){
+            // ...
+        }
+
+        return {code: generated_code, test_stdout, test_stderr, test_exit_code, iterations};
 
     }
 }
