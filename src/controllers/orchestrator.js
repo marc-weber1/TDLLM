@@ -81,5 +81,24 @@ async function generate_program_with_tests(image, prompts, tests){
     throw new Error("Max iterations exceeded.");
 }
 
+async function generate_server_with_tests(image, prompts, tests){
 
-export { generate_program_with_tests };
+    var messages = [...prompts]; // Copy the array
+
+
+    for(let iterations=1; iterations<=process.env.MAX_ITERATIONS; iterations++){ // Loop until it compiles & passes all tests
+
+        // Generate code with chatgpt
+
+        //var generated_code = await generate(messages);
+
+
+        // Generate random pod name for the server and tests to run in
+        var pod_name = Math.random().toString(36).substring(7);
+        
+
+    }
+}
+
+
+export { generate_program_with_tests, generate_server_with_tests };

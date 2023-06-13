@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { run_podman } from './controllers/podman.js';
-import { generate_program_with_tests } from './controllers/orchestrator.js'
+import { generate_program_with_tests, generate_server_with_tests } from './controllers/orchestrator.js'
 
 
 const router = express.Router();
@@ -38,5 +38,21 @@ router.post('/generate_and_test', async (req, res) => {
         res.status(500).send({error: err.message});
     }
 });
+
+router.post('/generate_server_and_test', async (req, res) => {
+    try{
+        console.log(req.body);
+        const image = req.body.image;
+        const prompts = req.body.prompts;
+        const tests = req.body.tests;
+
+        const resp = await generate_server_with_tests(image, prompts, tests);
+        res.json(resp);
+    }
+    catch(err){
+        console.error(err);
+        res.status(500).send({error: err.message});
+    }
+})
 
 export default router;
