@@ -1,21 +1,19 @@
 ## What is this?
 
-TDLLM is an API that helps an LLM write code based on a prompt, and a series of tests made in mochaJS that the code has to pass. An example API call would look like this:
+TDLLM is an API that helps an LLM write code based on a prompt, and a series of tests made in mochaJS that the code has to pass.
+
+The API and tests will run in a sandbox, so the endgoal is an API that can be safely called by users that should not have access to the server itself, even if the server is run by root/a sudoer. That said, please run the server as its own user for safety.
+
+Please report ANY vulnerabilities or attack vectors to the github issues, or my DMs if they are severe.
+
+
+## Program Mode
+
+Generate a program, and test it by running it with certain commandline arguments.
 ```
 POST /generate_and_test
 {
-    "image": "node:18-alpine",
-
-    "prompts": [
-        {
-            "role": "system",
-            "content": "You are a code generator that only generates code that can be parsed by a NodeJS runtime with no errors, and all plain language must be in comments. You write clean, organized code with helpful comments that can be understood by non-programmers."
-        },
-        {
-            "role": "user",
-            "content": "Write me a program that generates me a hash of the string 'bananas'. The string should be encoded in UTF-8, and the hash should be printed to the console as hex code."
-        }
-    ],
+    "prompt": "Write me a program that generates me a hash of the string provided in the first commandline argument. The string should be encoded in UTF-8, and the hash should be printed to the console as hex code.",
 
     "tests": `
 
@@ -25,16 +23,13 @@ POST /generate_and_test
         const hash = crypto.createHash('sha256');
 
         it('Should generate the hash correctly', async function() {
-            var result = await run();
+            var result = await run('bananas');
             assert( result.stdout.trim() == hash.update('bananas').digest('hex') );
         });
 
     `
 }
 ```
-The API and tests will run in a sandbox, so the endgoal is an API that can be safely run by users that should not have access to the server itself, even if the server is run by root/a sudoer. That said, please run the server as its own user for safety.
-
-Please report ANY vulnerabilities or attack vectors to the github issues, or my DMs if they are severe.
 
 
 ## Server mode
@@ -43,18 +38,7 @@ Use the server endpoint if you need to generate APIs instead, e.g. an ExpressJS 
 ```
 POST /generate_server_and_test
 {
-    "image": "node:18-alpine",
-
-    "prompts": [
-        {
-            "role": "system",
-            "content": "You are a code generator that only generates code that can be parsed by a NodeJS runtime with no errors, and all plain language must be in comments. You write clean, organized code with helpful comments that can be understood by non-programmers."
-        },
-        {
-            "role": "user",
-            "content": "Write me an expressJS api with a POST endpoint /multiply that takes a body like {'number': 3} and returns a number two times the one given, like {'number': 6}."
-        }
-    ],
+    "prompt": "Write me an expressJS api with a POST endpoint /multiply that takes a body like {'number': 3} and returns a number two times the one given, like {'number': 6}.",
 
     "tests": `
 

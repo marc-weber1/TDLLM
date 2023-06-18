@@ -3,9 +3,18 @@ import { generate } from './openai.js';
 
 
 // Uses MAX_ITERATIONS (number of times it tries to gen)
-async function generate_program_with_tests(image, prompts, tests){
+async function generate_program_with_tests(prompt, tests){
 
-    var messages = [...prompts]; // Copy the array
+    var messages = [
+        {
+            "role": "system",
+            "content": "You are a code generator that only generates code that can be parsed by a NodeJS runtime with no errors, and all plain language must be in comments. You write clean, organized code with helpful comments that can be understood by non-programmers."
+        },
+        {
+            "role": "user",
+            "content": prompt
+        }
+    ];
 
 
     for(let iterations=1; iterations<=process.env.MAX_ITERATIONS; iterations++){ // Loop until it compiles & passes all tests
@@ -87,9 +96,18 @@ function sleep(ms) {
     });
 }
 
-async function generate_server_with_tests(image, prompts, tests){
+async function generate_server_with_tests(prompt, tests){
 
-    var messages = [...prompts]; // Copy the array
+    var messages = [
+        {
+            "role": "system",
+            "content": "You are a code generator that only generates code that can be parsed by a NodeJS runtime with no errors, and all plain language must be in comments. You write clean, organized code with helpful comments that can be understood by non-programmers."
+        },
+        {
+            "role": "user",
+            "content": prompt
+        }
+    ];
 
 
     for(let iterations=1; iterations<=process.env.MAX_ITERATIONS; iterations++){ // Loop until it compiles & passes all tests
@@ -136,7 +154,20 @@ async function generate_server_with_tests(image, prompts, tests){
 
         if(exit_code != 0){
             // Feed error to AI, run it again
-            // ...
+            var errors = test_stderr;
+            if(server_stderr) errors = server_stderr;
+
+            messages.push({
+                role: "assistant",
+                content: generated_code
+            });
+
+            messages.push({
+                role: "user",
+                content: "I get the following error: " + errors
+            });
+
+            continue;
         }
         
         return {code: generated_code, test_stdout, test_stderr, test_exit_code, iterations};

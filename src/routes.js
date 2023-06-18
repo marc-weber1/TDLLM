@@ -26,11 +26,10 @@ router.post('/run', async (req, res) => {
 router.post('/generate_and_test', async (req, res) => {
     try{
         console.log(req.body);
-        const image = req.body.image;
-        const prompts = req.body.prompts;
+        const prompt = req.body.prompt;
         const tests = req.body.tests;
 
-        const resp = await generate_program_with_tests(image, prompts, tests);
+        const resp = await generate_program_with_tests(prompt, tests);
         res.json(resp);
     }
     catch(err){
@@ -42,11 +41,10 @@ router.post('/generate_and_test', async (req, res) => {
 router.post('/generate_server_and_test', async (req, res) => {
     try{
         console.log(req.body);
-        const image = req.body.image;
-        const prompts = req.body.prompts;
+        const prompt = req.body.prompt;
         const tests = req.body.tests;
 
-        const resp = await generate_server_with_tests(image, prompts, tests);
+        const resp = await generate_server_with_tests(prompt, tests);
         res.json(resp);
     }
     catch(err){
