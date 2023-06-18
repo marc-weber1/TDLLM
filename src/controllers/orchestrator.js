@@ -32,7 +32,7 @@ async function generate_program_with_tests(prompt, tests){
 
         async function run(){
             // Spawn the process with a piped stdin, stdout, and stderr
-            const process = spawn('node', [...arguments], {  // Use arguments from function
+            const process = spawn('node', ['-', ...arguments], {  // Use arguments from function, use - to pass stdin as code
                 stdio: 'pipe'
             });
 
@@ -56,6 +56,9 @@ async function generate_program_with_tests(prompt, tests){
             });
 
             var exit_code = await processPromise;
+
+            console.log(stdout);
+            console.log(stderr);
 
             return { stdout, stderr, exit_code };
         }
