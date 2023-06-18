@@ -62,11 +62,13 @@ POST /generate_server_and_test
         const assert = require('assert');
         const axios = require('axios');
 
-        it('multiplies 6 correctly', async () => {
-            var response = await axios.post(path.join(server_uri, 'multiply'), {
+        it('multiplies 6 correctly', () => {
+            axios.post(path.join(server_uri, 'multiply'), {
                 number: 6
-            });
-            assert( response.data.number == 12 );
+            })
+            .then(function (response) {
+                assert( response.data.number == 12 );
+            })
         });
 
     `
