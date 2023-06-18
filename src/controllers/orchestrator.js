@@ -81,6 +81,12 @@ async function generate_program_with_tests(image, prompts, tests){
     throw new Error("Max iterations exceeded.");
 }
 
+function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
+
 async function generate_server_with_tests(image, prompts, tests){
 
     var messages = [...prompts]; // Copy the array
@@ -92,19 +98,47 @@ async function generate_server_with_tests(image, prompts, tests){
         var generated_code = await generate(messages);
 
         // Run code in a new server
-        var server_info = run_server_podman(generated_code, image);
-        
-        // Run tests in the same pod as the new server
-        var test_code = `
-            var server_uri = 'localhost'
-        ` + tests;
-        var [test_stdout, test_stderr, test_exit_code] = await run_podman(test_code, 'mocha:latest', server_info.pod_name);
-        console.log({test_stdout, test_stderr, test_exit_code});
+        var server_info = run_server_podman(generated_code, "nodeserver:latest");
+        var server_stdout, server_stderr, server_exit_code;
+        var serverPromise = new Promise((resolveFunc) => {
+            server_info.process.stdout.on("data", data => {
+                server_stdout += data.toString();
+            });
+            server_info.process.stderr.on("data", data => {
+                server_stderr += data.toString();
+            });
+            server_info.process.on("exit", (exit_code) => {
+                server_exit_code = exit_code;
+                resolveFunc(exit_code);
+            });
+        });
 
-        if(test_exit_code != 0){
+        var test_stdout, test_stderr, test_exit_code;
+        var testPromise = new Promise(async (resolveFunc) => {
+            await sleep(1000); // Wait for the server to start
+
+            // Run tests in the same pod as the new server
+            var test_code = `
+                var server_uri = 'http:////localhost'
+            ` + tests;
+            var res = await run_podman(test_code, 'mocha:latest', server_info.pod_name);
+            test_stdout = res[0];
+            test_stderr = res[1];
+            test_exit_code = res[2];
+            resolveFunc(res[2]);
+        });
+
+        var exit_code = await Promise.race([serverPromise, testPromise]);
+        server_info.process.kill();
+        
+        console.log("server: " + JSON.stringify({server_stdout, server_stderr, server_exit_code}, 0, 2));
+        console.log("tests: " + JSON.stringify({test_stdout, test_stderr, test_exit_code}, 0, 2));
+
+        if(exit_code != 0){
+            // Feed error to AI, run it again
             // ...
         }
-
+        
         return {code: generated_code, test_stdout, test_stderr, test_exit_code, iterations};
 
     }

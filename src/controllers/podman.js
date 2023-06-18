@@ -6,7 +6,8 @@ const setTimeoutPromise = promisify(setTimeout);
 
 const allowedImages = [
     'node:18-alpine',
-    'mocha:latest'
+    'mocha:latest',
+    'nodeserver:latest'
 ];
 
 // Uses MEMORY_LIMIT (e.g. 256m - https://docs.podman.io/en/latest/markdown/podman-run.1.html#memory-m-number-unit) and TIME_LIMIT (in ms)

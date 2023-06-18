@@ -62,12 +62,12 @@ POST /generate_server_and_test
         const assert = require('assert');
         const axios = require('axios');
 
-        axios.post(path.join(server_uri, 'multiply'), {
-            number: 6
-        })
-        .then(function (response) {
+        it('multiplies 6 correctly', async () => {
+            var response = await axios.post(path.join(server_uri, 'multiply'), {
+                number: 6
+            });
             assert( response.data.number == 12 );
-        })
+        });
 
     `
 }
@@ -89,7 +89,8 @@ or include them in your environment.
 
 Run:
 ```
-podman build -t mocha -f mocha.dockerfile .
+podman build -t mocha -f mocha.dockerfile
+podman build -t nodeserver -f server.dockerfile
 node server.js
 ```
 
