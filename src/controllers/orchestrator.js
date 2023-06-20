@@ -1,6 +1,12 @@
-import { run_podman, run_server_podman } from './podman.js';
+import { run_podman, run_server_podman, kill_pod } from './podman.js';
 import { generate } from './openai.js';
 
+
+function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
 
 // Uses MAX_ITERATIONS (number of times it tries to gen)
 async function generate_program_with_tests(prompt, tests){
@@ -21,14 +27,14 @@ async function generate_program_with_tests(prompt, tests){
 
         // Generate code with chatgpt
 
-        var generated_code = await generate(messages);
+        let generated_code = await generate(messages);
 
 
         // Define the function that runs a process inside the container
 
-        var code = `
+        let code = `
         const { spawn } = require('child_process');
-        var generated_code = ` + JSON.stringify(generated_code) + `
+        let generated_code = ` + JSON.stringify(generated_code) + `
 
         async function run(){
             // Spawn the process with a piped stdin, stdout, and stderr
@@ -43,7 +49,7 @@ async function generate_program_with_tests(prompt, tests){
             // Collect any output from the child process's stdout and stderr
             let stdout = '';
             let stderr = '';
-            var processPromise = new Promise((resolveFunc) => {
+            let processPromise = new Promise((resolveFunc) => {
                 process.stdout.on("data", data => {
                     stdout += data.toString();
                 });
@@ -55,7 +61,7 @@ async function generate_program_with_tests(prompt, tests){
                 });
             });
 
-            var exit_code = await processPromise;
+            let exit_code = await processPromise;
 
             console.log(stdout);
             console.log(stderr);
@@ -69,7 +75,8 @@ async function generate_program_with_tests(prompt, tests){
 
         // Try running the code
 
-        const [stdout, stderr, exit_code] = await run_podman(code, 'mocha:latest');
+        const {stdout, stderr, exit_code, pod_name} = await run_podman(code, 'mocha:latest');
+        await kill_pod(pod_name);
 
         console.log({stdout, stderr, exit_code});
 
@@ -84,6 +91,7 @@ async function generate_program_with_tests(prompt, tests){
                 "content": "I get the following error: " + stdout
             });
 
+            await sleep(1000);
             continue;
         }
 
@@ -91,12 +99,6 @@ async function generate_program_with_tests(prompt, tests){
     }
 
     throw new Error("Max iterations exceeded.");
-}
-
-function sleep(ms) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms);
-    });
 }
 
 async function generate_server_with_tests(prompt, tests){
@@ -116,12 +118,12 @@ async function generate_server_with_tests(prompt, tests){
     for(let iterations=1; iterations<=process.env.MAX_ITERATIONS; iterations++){ // Loop until it compiles & passes all tests
 
         // Generate code with chatgpt
-        var generated_code = await generate(messages);
+        let generated_code = await generate(messages);
 
         // Run code in a new server
-        var server_info = run_server_podman(generated_code, "nodeserver:latest");
-        var server_stdout, server_stderr, server_exit_code;
-        var serverPromise = new Promise((resolveFunc) => {
+        let server_info = run_server_podman(generated_code, "nodeserver:latest");
+        let server_stdout, server_stderr, server_exit_code;
+        let serverPromise = new Promise((resolveFunc) => {
             server_info.process.stdout.on("data", data => {
                 server_stdout += data.toString();
             });
@@ -134,30 +136,30 @@ async function generate_server_with_tests(prompt, tests){
             });
         });
 
-        var test_stdout, test_stderr, test_exit_code;
-        var testPromise = new Promise(async (resolveFunc) => {
+        // Run tests in the same pod as the server
+        let test_stdout, test_stderr, test_exit_code;
+        let testPromise = new Promise(async (resolveFunc) => {
             await sleep(1000); // Wait for the server to start
 
-            // Run tests in the same pod as the new server
-            var test_code = `
+            let test_code = `
                 var server_uri = 'http:////localhost'
             ` + tests;
-            var res = await run_podman(test_code, 'mocha:latest', server_info.pod_name);
-            test_stdout = res[0];
-            test_stderr = res[1];
-            test_exit_code = res[2];
-            resolveFunc(res[2]);
+            let res = await run_podman(test_code, 'mocha:latest', server_info.pod_name);
+            test_stdout = res.stdout;
+            test_stderr = res.stderr;
+            test_exit_code = res.exit_code;
+            resolveFunc(res.exit_code);
         });
 
-        var exit_code = await Promise.race([serverPromise, testPromise]);
-        server_info.process.kill();
+        let exit_code = await Promise.race([serverPromise, testPromise]);
+        await kill_pod(server_info.pod_name);
         
         console.log("server: " + JSON.stringify({server_stdout, server_stderr, server_exit_code}, 0, 2));
         console.log("tests: " + JSON.stringify({test_stdout, test_stderr, test_exit_code}, 0, 2));
 
         if(exit_code != 0){
             // Feed error to AI, run it again
-            var errors = test_stderr;
+            let errors = test_stderr;
             if(server_stderr) errors = server_stderr;
 
             messages.push({
