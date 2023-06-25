@@ -1,4 +1,4 @@
-import { run_podman, run_server_podman, kill_pod } from './podman.js';
+import { PodmanSandbox } from './podman.js';
 import { generate } from './openai.js';
 
 
@@ -75,10 +75,12 @@ async function generate_program_with_tests(prompt, tests){
 
         // Try running the code
 
-        const {stdout, stderr, exit_code, pod_name} = await run_podman(code, 'mocha:latest');
-        await kill_pod(pod_name);
+        let sandbox = new PodmanSandbox();
+        let test_info = sandbox.add_process(code, 'mocha:latest');
+        sandbox.add_timeout(process.env.TIME_LIMIT);
+        let exit_code = await sandbox.race();
 
-        console.log({stdout, stderr, exit_code});
+        console.log(test_info);
 
         if( exit_code != 0 ){
             messages.push({
@@ -88,14 +90,14 @@ async function generate_program_with_tests(prompt, tests){
 
             messages.push({
                 "role": "user",
-                "content": "I get the following error: " + stdout
+                "content": "I get the following error: " + test_info.stdout
             });
 
             await sleep(1000);
             continue;
         }
 
-        return {code: generated_code, stdout, stderr, exit_code, iterations};
+        return {code: generated_code, test_info, iterations};
     }
 
     throw new Error("Max iterations exceeded.");
@@ -121,46 +123,23 @@ async function generate_server_with_tests(prompt, tests){
         let generated_code = await generate(messages);
 
         // Run code in a new server
-        let server_info = run_server_podman(generated_code, "nodeserver:latest");
-        let server_stdout, server_stderr, server_exit_code;
-        let serverPromise = new Promise((resolveFunc) => {
-            server_info.process.stdout.on("data", data => {
-                server_stdout += data.toString();
-            });
-            server_info.process.stderr.on("data", data => {
-                server_stderr += data.toString();
-            });
-            server_info.process.on("exit", (exit_code) => {
-                server_exit_code = exit_code;
-                resolveFunc(exit_code);
-            });
-        });
-
-        // Run tests in the same pod as the server
-        let test_stdout, test_stderr, test_exit_code;
-        let testPromise = new Promise(async (resolveFunc) => {
-            await sleep(1000); // Wait for the server to start
-
-            let test_code = `
-                var server_uri = 'http:////localhost'
-            ` + tests;
-            let res = await run_podman(test_code, 'mocha:latest', server_info.pod_name);
-            test_stdout = res.stdout;
-            test_stderr = res.stderr;
-            test_exit_code = res.exit_code;
-            resolveFunc(res.exit_code);
-        });
-
-        let exit_code = await Promise.race([serverPromise, testPromise]);
-        await kill_pod(server_info.pod_name);
+        let sandbox = new PodmanSandbox();
+        let server_info = sandbox.add_process(generated_code, "nodeserver:latest");
+        let test_code = `
+            let server_uri='http:////localhost'
+        ` + tests;
+        await sleep(1000); // Wait for server to start
+        let test_info = sandbox.add_process(test_code, 'mocha:latest');
+        sandbox.add_timeout(process.env.TIME_LIMIT);
+        let exit_code = await sandbox.race();
         
-        console.log("server: " + JSON.stringify({server_stdout, server_stderr, server_exit_code}, 0, 2));
-        console.log("tests: " + JSON.stringify({test_stdout, test_stderr, test_exit_code}, 0, 2));
+        console.log("server: " + JSON.stringify(server_info, 0, 2));
+        console.log("tests: " + JSON.stringify(test_info, 0, 2));
 
         if(exit_code != 0){
             // Feed error to AI, run it again
-            let errors = test_stderr;
-            if(server_stderr) errors = server_stderr;
+            let errors = test_info.stderr;
+            if(server_info.stderr != '') errors = server_info.stderr;
 
             messages.push({
                 role: "assistant",
@@ -175,7 +154,7 @@ async function generate_server_with_tests(prompt, tests){
             continue;
         }
         
-        return {code: generated_code, test_stdout, test_stderr, test_exit_code, iterations};
+        return {code: generated_code, server_info, test_info, iterations};
 
     }
 }

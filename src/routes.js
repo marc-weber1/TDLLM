@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { run_podman } from './controllers/podman.js';
+import { PodmanSandbox } from './controllers/podman.js';
 import { generate_program_with_tests, generate_server_with_tests } from './controllers/orchestrator.js'
 
 
@@ -12,10 +12,13 @@ router.post('/run', async (req, res) => {
         const code = req.body.code;
         const image = req.body.image;
 
-        const [stdout, stderr, exit_code] = await run_podman(code, image);
+        let sandbox = new PodmanSandbox();
+        const process_info = sandbox.add_process(code, image);
+        const timeout_info = sandbox.add_timeout(process.env.TIME_LIMIT);
+        const exit_code = await sandbox.race();
         
-        console.log({ stdout, stderr, exit_code });
-        res.json({ stdout, stderr, exit_code });
+        console.log(process_info);
+        res.json(process_info);
     }
     catch (err) {
         console.error(err);
