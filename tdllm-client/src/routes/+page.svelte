@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import Tab1 from "../pages/Run.svelte";
   import Tab2 from "../pages/CLI.svelte";
   import Tab3 from "../pages/API.svelte";

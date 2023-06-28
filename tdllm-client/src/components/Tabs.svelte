@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { SvelteComponent } from "svelte";
+  import type { ComponentType } from "svelte";
 
   interface TabItem {
     label: string;
     value: number;
-    component: typeof SvelteComponent;
+    component: ComponentType;
   }
 
   export let items: TabItem[] = [];
