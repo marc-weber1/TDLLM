@@ -21,12 +21,12 @@ async function run(code: string): Promise<ProcessResult> {
     return await call_api('run', { code, image: "node:18-alpine" });
 }
 
-async function generate_cli(test_code: string, prompt: string): Promise<{ generated_code: string, test_info: ProcessResult, iterations: number }>{
-    return await call_api('generate_cli', { tests: test_code, prompt });
+async function generate_cli(test_code: string, prompt: string): Promise<{ code: string, test_info: ProcessResult, iterations: number }>{
+    return await call_api('generate_and_test', { tests: test_code, prompt });
 }
 
-async function generate_api(test_code: string, prompt: string) : Promise<{ generated_code: string, server_info: ProcessResult, test_info: ProcessResult, iterations: number }> {
-    return await call_api('generate_api', { tests: test_code, prompt });
+async function generate_api(test_code: string, prompt: string) : Promise<{ code: string, server_info: ProcessResult, test_info: ProcessResult, iterations: number }> {
+    return await call_api('generate_server_and_test', { tests: test_code, prompt });
 }
 
 export { run, generate_cli, generate_api };

@@ -8,9 +8,9 @@
 <CodeMirror bind:value={$test_code_clitab} lang={javascript()} />
 <textarea bind:value={$prompt_clitab} />
 <br />
-<button on:click={async t => {
+<button on:click={async () => {
     var resp = await generate_cli($test_code_clitab, $prompt_clitab);
-    generated_code_clitab.set(resp.generated_code);
+    generated_code_clitab.set(resp.code);
     stdout_clitab.set(resp.test_info.stdout);
     stderr_clitab.set(resp.test_info.stderr);
     exit_code_clitab.set(resp.test_info.exit_code);

@@ -4,7 +4,7 @@ export const code_runtab = writable("// Importing the Node.js built-in 'crypto' 
 export const test_code_clitab = writable("const crypto = require('crypto');\nconst assert = require('assert');\n\nconst hash = crypto.createHash('sha256');\n\nit('Should generate the hash correctly', async function() {\n    var result = await run('bananas');\n    assert( result.stdout.trim() == hash.update('bananas').digest('hex') );\n});");
 export const prompt_clitab = writable("Write me a program that generates me a hash of the string provided in the first commandline argument. The string should be encoded in UTF-8, and the hash should be printed to the console as hex code.");
 export const test_code_apitab = writable("const path = require('path');\nconst assert = require('assert');\nconst axios = require('axios');\n\nit('multiplies 6 correctly', () => {\n    axios.post(path.join(server_uri, 'multiply'), {\n        number: 6\n    })\n    .then(function (response) {\n        assert( response.data.number == 12 );\n    })\n});");
-export const prompt_apitab = writable("Write an expressJS api with a POST endpoint /multiply that takes a body like {'number': 3} and returns a number two times the one given, like {'number': 6}. It should listen on porn 80.");
+export const prompt_apitab = writable("Write an expressJS api with a POST endpoint /multiply that takes a body like {'number': 3} and returns a number two times the one given, like {'number': 6}. It should listen on port 80.");
 
 export const stdout_runtab = writable("");
 export const stderr_runtab = writable("");

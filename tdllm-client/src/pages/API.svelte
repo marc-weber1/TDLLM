@@ -10,7 +10,7 @@
 <br />
 <button on:click={async () => {
     var resp = await generate_api($test_code_apitab, $prompt_apitab);
-    generated_code_apitab.set(resp.generated_code);
+    generated_code_apitab.set(resp.code);
     server_stdout_apitab.set(resp.server_info.stdout);
     server_stderr_apitab.set(resp.server_info.stderr);
     server_exit_code_apitab.set(resp.server_info.exit_code);
