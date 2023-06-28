@@ -8,12 +8,6 @@ dependencies:
   '@codemirror/lang-javascript':
     specifier: ^6.1.9
     version: 6.1.9
-  '@esbuild-plugins/node-globals-polyfill':
-    specifier: ^0.2.3
-    version: 0.2.3(esbuild@0.17.19)
-  '@esbuild-plugins/node-modules-polyfill':
-    specifier: ^0.2.2
-    version: 0.2.2(esbuild@0.17.19)
   '@monaco-editor/loader':
     specifier: ^1.3.3
     version: 1.3.3(monaco-editor@0.39.0)
@@ -59,8 +53,8 @@ devDependencies:
     specifier: ^8.8.0
     version: 8.8.0(eslint@8.43.0)
   eslint-plugin-svelte:
-    specifier: ^2.31.1
-    version: 2.31.1(eslint@8.43.0)(svelte@4.0.0)
+    specifier: ^2.32.0
+    version: 2.32.0(eslint@8.43.0)(svelte@4.0.0)
   prettier:
     specifier: ^2.8.8
     version: 2.8.8
@@ -172,30 +166,13 @@ packages:
       w3c-keyname: 2.2.8
     dev: false
 
-  /@esbuild-plugins/node-globals-polyfill@0.2.3(esbuild@0.17.19):
-    resolution: {integrity: sha512-r3MIryXDeXDOZh7ih1l/yE9ZLORCd5e8vWg02azWRGj5SPTuoh69A2AIyn0Z31V/kHBfZ4HgWJ+OK3GTTwLmnw==}
-    peerDependencies:
-      esbuild: '*'
-    dependencies:
-      esbuild: 0.17.19
-    dev: false
-
-  /@esbuild-plugins/node-modules-polyfill@0.2.2(esbuild@0.17.19):
-    resolution: {integrity: sha512-LXV7QsWJxRuMYvKbiznh+U1ilIop3g2TeKRzUxOG5X3YITc8JyyTa90BmLwqqv0YnX4v32CSlG+vsziZp9dMvA==}
-    peerDependencies:
-      esbuild: '*'
-    dependencies:
-      esbuild: 0.17.19
-      escape-string-regexp: 4.0.0
-      rollup-plugin-node-polyfills: 0.2.1
-    dev: false
-
   /@esbuild/android-arm64@0.17.19:
     resolution: {integrity: sha512-KBMWvEZooR7+kzY0BtbTQn0OAYY7CsiydT63pVEaPtVYF0hXbUaOyZog37DKxK7NF3XacBJOpYT4adIJh+avxA==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [android]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/android-arm@0.17.19:
@@ -204,6 +181,7 @@ packages:
     cpu: [arm]
     os: [android]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/android-x64@0.17.19:
@@ -212,6 +190,7 @@ packages:
     cpu: [x64]
     os: [android]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/darwin-arm64@0.17.19:
@@ -220,6 +199,7 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/darwin-x64@0.17.19:
@@ -228,6 +208,7 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/freebsd-arm64@0.17.19:
@@ -236,6 +217,7 @@ packages:
     cpu: [arm64]
     os: [freebsd]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/freebsd-x64@0.17.19:
@@ -244,6 +226,7 @@ packages:
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/linux-arm64@0.17.19:
@@ -252,6 +235,7 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/linux-arm@0.17.19:
@@ -260,6 +244,7 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/linux-ia32@0.17.19:
@@ -268,6 +253,7 @@ packages:
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/linux-loong64@0.17.19:
@@ -276,6 +262,7 @@ packages:
     cpu: [loong64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/linux-mips64el@0.17.19:
@@ -284,6 +271,7 @@ packages:
     cpu: [mips64el]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/linux-ppc64@0.17.19:
@@ -292,6 +280,7 @@ packages:
     cpu: [ppc64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/linux-riscv64@0.17.19:
@@ -300,6 +289,7 @@ packages:
     cpu: [riscv64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/linux-s390x@0.17.19:
@@ -308,6 +298,7 @@ packages:
     cpu: [s390x]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/linux-x64@0.17.19:
@@ -316,6 +307,7 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/netbsd-x64@0.17.19:
@@ -324,6 +316,7 @@ packages:
     cpu: [x64]
     os: [netbsd]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/openbsd-x64@0.17.19:
@@ -332,6 +325,7 @@ packages:
     cpu: [x64]
     os: [openbsd]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/sunos-x64@0.17.19:
@@ -340,6 +334,7 @@ packages:
     cpu: [x64]
     os: [sunos]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/win32-arm64@0.17.19:
@@ -348,6 +343,7 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/win32-ia32@0.17.19:
@@ -356,6 +352,7 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/win32-x64@0.17.19:
@@ -364,6 +361,7 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@eslint-community/eslint-utils@4.4.0(eslint@8.43.0):
@@ -1052,10 +1050,12 @@ packages:
       '@esbuild/win32-arm64': 0.17.19
       '@esbuild/win32-ia32': 0.17.19
       '@esbuild/win32-x64': 0.17.19
+    dev: true
 
   /escape-string-regexp@4.0.0:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
+    dev: true
 
   /eslint-config-prettier@8.8.0(eslint@8.43.0):
     resolution: {integrity: sha512-wLbQiFre3tdGgpDv67NQKnJuTlcUVYHas3k+DZCc2U2BadthoEY4B7hLPvAxaqdyOGCzuLfii2fqGph10va7oA==}
@@ -1066,12 +1066,12 @@ packages:
       eslint: 8.43.0
     dev: true
 
-  /eslint-plugin-svelte@2.31.1(eslint@8.43.0)(svelte@4.0.0):
-    resolution: {integrity: sha512-08v+DqzHiwIVEbi+266D7+BDhayp9OSqCwa/lHaZlZOlFY0vZLYs/h7SkkUPzA5fTVt8OUJBtvCxFiWEYOvvGg==}
+  /eslint-plugin-svelte@2.32.0(eslint@8.43.0)(svelte@4.0.0):
+    resolution: {integrity: sha512-q8uxR4wFmAkb+RX2qIJIO+xAjecInZuGYXbXOvpxMwv7Y5oQrq5WOkiYwLqPZk6p1L5UmSr54duloKiBucDL7A==}
     engines: {node: ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0-0
-      svelte: ^3.37.0 || ^4.0.0-0
+      svelte: ^3.37.0 || ^4.0.0
     peerDependenciesMeta:
       svelte:
         optional: true
@@ -1088,7 +1088,7 @@ packages:
       postcss-selector-parser: 6.0.13
       semver: 7.5.3
       svelte: 4.0.0
-      svelte-eslint-parser: 0.31.0(svelte@4.0.0)
+      svelte-eslint-parser: 0.32.0(svelte@4.0.0)
     transitivePeerDependencies:
       - supports-color
       - ts-node
@@ -1999,11 +1999,11 @@ packages:
       codemirror: 6.0.1(@lezer/common@1.0.3)
     dev: false
 
-  /svelte-eslint-parser@0.31.0(svelte@4.0.0):
-    resolution: {integrity: sha512-/31RpBf/e3YjoFphjsyo3JRyN1r4UalGAGafXrZ6EJK4h4COOO0rbfBoen5byGsXnIJKsrlC1lkEd2Vzpq2IDg==}
+  /svelte-eslint-parser@0.32.0(svelte@4.0.0):
+    resolution: {integrity: sha512-Q8Nh3GHHoWZMv3Ej4zw+3+gyWPR8I5pPTJXEOvW+JOgwhGXqGKh7mOKNlVcEPtk+PCGiK9TPaRtvRkKoJR327A==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
-      svelte: ^3.37.0 || ^4.0.0-0
+      svelte: ^3.37.0 || ^4.0.0
     peerDependenciesMeta:
       svelte:
         optional: true
