@@ -6,10 +6,10 @@ The API and tests will run in a sandbox, so the endgoal is an API that can be sa
 
 Please report ANY vulnerabilities or attack vectors to the github issues, or my DMs if they are severe.
 
-
 ## Program Mode
 
 Generate a program, and test it by running it with certain commandline arguments.
+
 ```
 POST /generate_and_test
 {
@@ -31,10 +31,10 @@ POST /generate_and_test
 }
 ```
 
-
 ## Server mode
 
 Use the server endpoint if you need to generate APIs instead, e.g. an ExpressJS API, and test it over the network.
+
 ```
 POST /generate_server_and_test
 {
@@ -59,10 +59,10 @@ POST /generate_server_and_test
 }
 ```
 
-
 ## Setup
 
 Install podman and nodeJS. Make a .env file with these variables:
+
 ```
 PORT=80
 MEMORY_LIMIT=256m
@@ -71,15 +71,16 @@ MAX_ITERATIONS=10
 OPENAI_MODEL=gpt-3.5-turbo
 OPENAI_KEY=...
 ```
+
 or include them in your environment.
 
 Run:
+
 ```
 podman build -t mocha -f mocha.dockerfile
 podman build -t nodeserver -f server.dockerfile
 node server.js
 ```
-
 
 ## Available test variables (program mode)
 
