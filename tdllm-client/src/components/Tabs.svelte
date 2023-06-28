@@ -1,13 +1,23 @@
-<script>
-  export let items = [];
+<script lang="ts">
+  import type { SvelteComponent } from "svelte";
+
+  interface TabItem {
+    label: string;
+    value: number;
+    component: typeof SvelteComponent;
+  }
+
+  export let items: TabItem[] = [];
   export let activeTabValue = 1;
 
-  const handleClick = (tabValue) => () => (activeTabValue = tabValue);
+  const handleClick = (tabValue: number) => () => (activeTabValue = tabValue);
 </script>
 
 <ul>
   {#each items as item}
-    <li class={activeTabValue === item.value ? "active" : ""}>
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <li class:active={activeTabValue === item.value}>
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
       <span on:click={handleClick(item.value)}>{item.label}</span>
     </li>
   {/each}
@@ -28,6 +38,7 @@
     border-radius: 0 0 0.5rem 0.5rem;
     border-top: 0;
   }
+
   ul {
     display: flex;
     flex-wrap: wrap;
@@ -36,6 +47,7 @@
     list-style: none;
     border-bottom: 1px solid #dee2e6;
   }
+
   li {
     margin-bottom: -1px;
   }
