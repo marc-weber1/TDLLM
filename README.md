@@ -77,9 +77,10 @@ or include them in your environment.
 Run:
 
 ```
+podman pull node:18-alpine
 podman build -t mocha -f mocha.dockerfile
 podman build -t nodeserver -f server.dockerfile
-node server.js
+npm start
 ```
 
 ## Available test variables (program mode)
