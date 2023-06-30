@@ -29,7 +29,7 @@
   }}>Generate</button>
 <br />
 <!-- <CodeMirror bind:value={$generated_code_clitab} readonly lang={javascript()} /> -->
-<MonacoEditor bind:code={$generated_code_clitab} lang="javascript" />
+<MonacoEditor bind:code={$generated_code_clitab} lang="javascript" readOnly />
 
 <br />
 <textarea bind:value={$stdout_clitab} readonly />

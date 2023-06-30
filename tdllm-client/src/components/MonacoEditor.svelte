@@ -12,6 +12,7 @@
   export let code = "// Loading...";
   export let lang = "javascript";
   export let autoTypings = false;
+  export let readOnly = false;
 
   const loadCode = (code: string, language: string) => {
     model = monaco.editor.createModel(code, language);
@@ -28,6 +29,7 @@
     editor = monaco.editor.create(editorContainer, {
       theme: "vs-dark",
       automaticLayout: true,
+      readOnly,
     });
 
     editor.onDidChangeModelContent(() => (code = editor.getValue()));
