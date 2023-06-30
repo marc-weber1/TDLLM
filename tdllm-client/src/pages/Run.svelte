@@ -8,25 +8,39 @@
   let loading: boolean = false;
 </script>
 
-<span>Test Code</span>
-<!-- <CodeMirror bind:value={$code_runtab} lang={javascript()} /> -->
-<MonacoEditor bind:code={$code_runtab} />
-<button class="btn variant-filled" disabled={loading}
-  on:click={async () => {
-    loading = true;
-    var resp = await run($code_runtab);
-    loading = false;
-    stdout_runtab.set(resp.stdout);
-    stderr_runtab.set(resp.stderr);
-    exit_code_runtab.set(resp.exit_code);
-  }}>Run</button>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
-<label class="label">
-	<span>STDOUT</span>
-  <textarea bind:value={$stdout_runtab} class="textarea" rows="4" readonly />
-</label>
-<label class="label">
-	<span>STDERR</span>
-  <textarea bind:value={$stderr_runtab} class="textarea" rows="4" readonly />
-</label>
-Exit code: {$exit_code_runtab}
+  <section class="col-span-full">
+    <span>Code</span>
+    <!-- <CodeMirror bind:value={$code_runtab} lang={javascript()} /> -->
+    <MonacoEditor bind:code={$code_runtab} />
+  </section>
+  <section class="col-span-full text-center">
+    <button class="btn btn-lg variant-filled-primary font-bold" disabled={loading}
+      on:click={async () => {
+        loading = true;
+        var resp = await run($code_runtab);
+        loading = false;
+        stdout_runtab.set(resp.stdout);
+        stderr_runtab.set(resp.stderr);
+        exit_code_runtab.set(resp.exit_code);
+      }}>Run</button>
+  </section>
+
+  <section>
+    <label class="label">
+      <span>STDOUT</span>
+      <textarea bind:value={$stdout_runtab} class="textarea" rows="4" readonly />
+    </label>
+  </section>
+  <section>
+    <label class="label">
+      <span>STDERR</span>
+      <textarea bind:value={$stderr_runtab} class="textarea" rows="4" readonly />
+    </label>
+  </section>
+  <section class="col-span-full">
+    Exit code: {$exit_code_runtab}
+  </section>
+
+</div>
