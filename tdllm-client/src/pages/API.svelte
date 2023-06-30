@@ -15,16 +15,23 @@
     iterations_apitab,
   } from "$lib/stores";
   import MonacoEditor from "../components/MonacoEditor.svelte";
+
+  let loading: boolean = false;
 </script>
 
+<span>Test Code</span>
 <!-- <CodeMirror bind:value={$test_code_apitab} lang={javascript()} /> -->
 <MonacoEditor bind:code={$test_code_apitab} lang="javascript" />
 
-<textarea bind:value={$prompt_apitab} />
-<br />
-<button
+<label class="label">
+	<span>Prompt</span>
+	<textarea bind:value={$prompt_apitab} class="textarea" rows="4" />
+</label>
+<button class="btn variant-filled" disabled={loading}
   on:click={async () => {
+    loading = true;
     var resp = await generate_api($test_code_apitab, $prompt_apitab);
+    loading = false;
     generated_code_apitab.set(resp.code);
     server_stdout_apitab.set(resp.server_info.stdout);
     server_stderr_apitab.set(resp.server_info.stderr);
@@ -34,17 +41,25 @@
     test_exit_code_apitab.set(resp.test_info.exit_code);
     iterations_apitab.set(resp.iterations);
   }}>Generate</button>
-<br />
+
 <!-- <CodeMirror bind:value={$generated_code_apitab} readonly lang={javascript()} /> -->
 <MonacoEditor bind:code={$generated_code_apitab} lang="javascript" />
-
-<br />
-<textarea bind:value={$server_stdout_apitab} readonly />
-<textarea bind:value={$server_stderr_apitab} readonly />
+<label class="label">
+	<span>STDOUT</span>
+  <textarea bind:value={$server_stdout_apitab} class="textarea" rows="4" readonly />
+</label>
+<label class="label">
+	<span>STDERR</span>
+  <textarea bind:value={$server_stderr_apitab} class="textarea" rows="4" readonly />
+</label>
 Exit code: {$server_exit_code_apitab}
-<br />
-<textarea bind:value={$test_stdout_apitab} readonly />
-<textarea bind:value={$test_stderr_apitab} readonly />
+<label class="label">
+	<span>STDOUT</span>
+  <textarea bind:value={$test_stdout_apitab} class="textarea" rows="4" readonly />
+</label>
+<label class="label">
+	<span>STDERR</span>
+  <textarea bind:value={$test_stderr_apitab} class="textarea" rows="4" readonly />
+</label>
 Exit code: {$test_exit_code_apitab}
-<br />
 Iterations: {$iterations_apitab}

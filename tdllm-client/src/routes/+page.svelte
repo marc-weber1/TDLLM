@@ -1,15 +1,24 @@
 <script lang="ts">
-  import Tab1 from "../pages/Run.svelte";
-  import Tab2 from "../pages/CLI.svelte";
-  import Tab3 from "../pages/API.svelte";
-  import Tabs from "../components/Tabs.svelte";
+  import RunTab from "../pages/Run.svelte";
+  import CLITab from "../pages/CLI.svelte";
+  import APITab from "../pages/API.svelte";
+  import { TabGroup, Tab } from '@skeletonlabs/skeleton';
 
-  // List of tab items with labels, values and assigned components
-  let items = [
-    { label: "Run", value: 1, component: Tab1 },
-    { label: "CLI", value: 2, component: Tab2 },
-    { label: "API", value: 3, component: Tab3 },
-  ];
+  let tabSet: number = 0;
 </script>
 
-<Tabs {items} />
+<TabGroup>
+  <Tab bind:group={tabSet} name="tab1" value={0}>Run</Tab>
+	<Tab bind:group={tabSet} name="tab2" value={1}>CLI</Tab>
+	<Tab bind:group={tabSet} name="tab3" value={2}>API</Tab>
+	<!-- Tab Panels --->
+	<svelte:fragment slot="panel">
+		{#if tabSet === 0}
+			<RunTab />
+		{:else if tabSet === 1}
+			<CLITab />
+		{:else if tabSet === 2}
+			<APITab />
+		{/if}
+	</svelte:fragment>
+</TabGroup>
