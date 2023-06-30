@@ -6,7 +6,7 @@ import routes from "./src/routes";
 dotenv.config();
 
 try {
-  const requiredletiables = [
+  const required_vars = [
     "MEMORY_LIMIT",
     "TIME_LIMIT",
     "MAX_ITERATIONS",
@@ -14,11 +14,11 @@ try {
     "OPENAI_KEY",
   ];
 
-  const undefinedletiables = requiredletiables.filter((letiable) => !process.env[letiable]);
+  const missing_vars = required_vars.filter((v) => !process.env[v]);
 
-  if (undefinedletiables.length > 0)
+  if (missing_vars.length > 0)
     throw new Error(
-      `The following environment letiables must be defined: ${undefinedletiables.join(", ")}`
+      `The following environment variables must be defined: ${missing_vars.join(", ")}`
     );
 } catch (error) {
   console.error(error);

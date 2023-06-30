@@ -50,11 +50,9 @@ class PodmanSandbox {
         this.processes[process_index].stderr += data.toString();
       });
       podman.on("exit", (exit_code) => {
-        if (exit_code === null) exit_code = -1;
-
-        this.processes[process_index].exit_code = exit_code;
+        this.processes[process_index].exit_code = exit_code ?? -1;
         //console.log(JSON.stringify(this.processes[process_index], 0, 2));
-        resolveFunc(exit_code);
+        resolveFunc(exit_code ?? -1);
       });
     });
 
@@ -97,8 +95,7 @@ class PodmanSandbox {
         stderr += data.toString();
       });
       killp.on("exit", (exit_code) => {
-        if (exit_code === null) exit_code = -1;
-        resolveFunc(exit_code);
+        resolveFunc(exit_code ?? -1);
       });
     });
 
