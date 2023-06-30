@@ -43,7 +43,7 @@
   }}>Generate</button>
 
 <!-- <CodeMirror bind:value={$generated_code_apitab} readonly lang={javascript()} /> -->
-<MonacoEditor bind:code={$generated_code_apitab} lang="javascript" />
+<MonacoEditor bind:code={$generated_code_apitab} lang="javascript" readOnly />
 <label class="label">
 	<span>STDOUT</span>
   <textarea bind:value={$server_stdout_apitab} class="textarea" rows="4" readonly />
