@@ -1,6 +1,6 @@
 <script lang="ts">
-  // import CodeMirror from "svelte-codemirror-editor";
-  // import { javascript } from "@codemirror/lang-javascript";
+  import CodeMirror from "svelte-codemirror-editor";
+  import { javascript } from "@codemirror/lang-javascript";
   import { generate_cli } from "$lib/TDLLMBackend";
   import {
     test_code_clitab,
@@ -45,8 +45,8 @@
 
   <section class="col-span-full">
     <span>Generated Code</span>
-    <!-- <CodeMirror bind:value={$generated_code_clitab} readonly lang={javascript()} /> -->
-    <MonacoEditor bind:code={$generated_code_clitab} lang="javascript" readOnly />
+    <CodeMirror bind:value={$generated_code_clitab} readonly lang={javascript()} />
+    <!-- <MonacoEditor bind:code={$generated_code_clitab} lang="javascript" readOnly /> -->
   </section>
   <section>
     <label class="label">

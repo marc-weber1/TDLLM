@@ -1,6 +1,6 @@
 <script lang="ts">
-  // import CodeMirror from "svelte-codemirror-editor";
-  // import { javascript } from "@codemirror/lang-javascript";
+  import CodeMirror from "svelte-codemirror-editor";
+  import { javascript } from "@codemirror/lang-javascript";
   import { generate_api } from "$lib/TDLLMBackend";
   import {
     test_code_apitab,
@@ -51,8 +51,8 @@
 
   <section class="col-span-full">
     <span>Generated Code</span>
-    <!-- <CodeMirror bind:value={$generated_code_apitab} readonly lang={javascript()} /> -->
-    <MonacoEditor bind:code={$generated_code_apitab} lang="javascript" readOnly />
+    <CodeMirror bind:value={$generated_code_apitab} readonly lang={javascript()} />
+    <!-- <MonacoEditor bind:code={$generated_code_apitab} lang="javascript" readOnly /> -->
     </section>
   <section>
     <label class="label">
