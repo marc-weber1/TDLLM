@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post("/run", async (req, res) => {
   try {
-    console.log(req.body);
+    req.log.debug({body: req.body});
     const code = req.body.code;
     const image = req.body.image;
 
@@ -19,38 +19,38 @@ router.post("/run", async (req, res) => {
     const timeout_info = sandbox.add_timeout(+process.env.TIME_LIMIT!);
     const exit_code = await sandbox.race();
 
-    console.log(process_info);
+    req.log.debug({process_info});
     res.json(process_info);
   } catch (err: any) {
-    console.error(err);
+    req.log.error(err);
     res.status(500).send({ error: err.message });
   }
 });
 
 router.post("/generate_and_test", async (req, res) => {
   try {
-    console.log(req.body);
+    req.log.debug({body: req.body});
     const prompt = req.body.prompt;
     const tests = req.body.tests;
 
-    const resp = await generate_program_with_tests(prompt, tests);
+    const resp = await generate_program_with_tests(prompt, tests, req.log);
     res.json(resp);
   } catch (err: any) {
-    console.error(err);
+    req.log.error(err);
     res.status(500).send({ error: err.message });
   }
 });
 
 router.post("/generate_server_and_test", async (req, res) => {
   try {
-    console.log(req.body);
+    req.log.debug({body: req.body});
     const prompt = req.body.prompt;
     const tests = req.body.tests;
 
-    const resp = await generate_server_with_tests(prompt, tests);
+    const resp = await generate_server_with_tests(prompt, tests, req.log);
     res.json(resp);
   } catch (err: any) {
-    console.error(err);
+    req.log.error(err);
     res.status(500).send({ error: err.message });
   }
 });

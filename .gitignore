@@ -6,6 +6,7 @@
 **/build
 **/.svelte-kit
 **/package
+*.log
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 

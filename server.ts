@@ -1,9 +1,10 @@
 import express, { ErrorRequestHandler } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import routes from "./src/routes";
-
 dotenv.config();
+
+import routes from "./src/routes";
+import logger from "./src/logger";
 
 try {
   const required_vars = [
@@ -32,6 +33,7 @@ const jsonErrorHandler: ErrorRequestHandler = (err, _, res, __) => res.status(50
 
 app.use(express.json());
 app.use(cors()); // allow all requests
+app.use(logger);
 app.use(jsonErrorHandler);
 app.use("/", routes);
 

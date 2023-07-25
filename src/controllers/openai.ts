@@ -3,7 +3,6 @@ import SimpleMarkdown from "simple-markdown";
 
 const extract_code = (text: string) => {
   const syntaxTree = SimpleMarkdown.defaultBlockParse(text);
-  console.log("AI response: " + JSON.stringify(syntaxTree, null, 2));
 
   const codeBlocks = syntaxTree
     .filter((block) => block.type === "codeBlock")
@@ -28,8 +27,7 @@ const generate = async (messages: ChatCompletionRequestMessage[]) => {
 
   // If a ``` is in the generated code, strip everything outside the code blocks
   if (generated_code.includes("```")) generated_code = extract_code(generated_code);
-
-  console.log(generated_code);
+  
   return generated_code;
 };
 

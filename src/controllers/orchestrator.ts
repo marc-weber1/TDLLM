@@ -1,6 +1,7 @@
 import { PodmanSandbox } from "./podman";
 import { generate } from "./openai";
 import { ChatCompletionRequestMessage, ChatCompletionRequestMessageRoleEnum } from "openai";
+import { pino } from "pino";
 
 const sleep = (ms: number) =>
   new Promise((resolve) => {
@@ -8,7 +9,7 @@ const sleep = (ms: number) =>
   });
 
 // Uses MAX_ITERATIONS (number of times it tries to gen)
-const generate_program_with_tests = async (prompt: string, tests: string) => {
+const generate_program_with_tests = async (prompt: string, tests: string, log: pino.Logger) => {
   let messages: ChatCompletionRequestMessage[] = [
     {
       role: ChatCompletionRequestMessageRoleEnum.System,
@@ -24,9 +25,10 @@ const generate_program_with_tests = async (prompt: string, tests: string) => {
   for (let iterations = 1; iterations <= +process.env.MAX_ITERATIONS!; iterations++) {
     // Loop until it compiles & passes all tests
 
-    // Generate code with chatgpt
+    // Generate code with LLM
 
     let generated_code = await generate(messages);
+    log.debug({generated_code});
 
     // Define the function that runs a process inside the container
 
@@ -72,7 +74,7 @@ const generate_program_with_tests = async (prompt: string, tests: string) => {
         ` +
       tests;
 
-    console.log(code);
+    log.debug({code});
 
     // Try running the code
 
@@ -81,7 +83,7 @@ const generate_program_with_tests = async (prompt: string, tests: string) => {
     sandbox.add_timeout(+process.env.TIME_LIMIT!);
     let exit_code = await sandbox.race();
 
-    console.log(test_info);
+    log.debug({test_info});
 
     if (exit_code != 0) {
       messages.push({
@@ -104,7 +106,7 @@ const generate_program_with_tests = async (prompt: string, tests: string) => {
   throw new Error("Max iterations exceeded.");
 };
 
-const generate_server_with_tests = async (prompt: string, tests: string) => {
+const generate_server_with_tests = async (prompt: string, tests: string, log: pino.Logger) => {
   let messages: ChatCompletionRequestMessage[] = [
     {
       role: ChatCompletionRequestMessageRoleEnum.System,
@@ -122,6 +124,7 @@ const generate_server_with_tests = async (prompt: string, tests: string) => {
 
     // Generate code with chatgpt
     let generated_code = await generate(messages);
+    log.debug({generated_code});
 
     // Run code in a new server
     let sandbox = new PodmanSandbox();
@@ -135,8 +138,7 @@ const generate_server_with_tests = async (prompt: string, tests: string) => {
     sandbox.add_timeout(+process.env.TIME_LIMIT!);
     let exit_code = await sandbox.race();
 
-    console.log("server: " + JSON.stringify(server_info, null, 2));
-    console.log("tests: " + JSON.stringify(test_info, null, 2));
+    log.debug({server_info, test_info});
 
     if (exit_code != 0) {
       // Feed error to AI, run it again

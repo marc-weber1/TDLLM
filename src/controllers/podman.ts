@@ -51,7 +51,6 @@ class PodmanSandbox {
       });
       podman.on("exit", (exit_code) => {
         this.processes[process_index].exit_code = exit_code ?? -1;
-        //console.log(JSON.stringify(this.processes[process_index], 0, 2));
         resolveFunc(exit_code ?? -1);
       });
     });
@@ -80,7 +79,7 @@ class PodmanSandbox {
   }
 
   kill = async (): Promise<ProcessResult> => {
-    console.log("Killing " + this.pod_name);
+    //console.log("Killing " + this.pod_name);
     const killp = spawn("podman", ["pod", "rm", "-f", "-t=0", this.pod_name], {
       stdio: "pipe",
     });
@@ -105,7 +104,6 @@ class PodmanSandbox {
   };
 
   race = async () => {
-    console.log(JSON.stringify(this.processes));
     const exit_code = await Promise.race(this.processes.map((p) => p.promise));
     await this.kill();
     return exit_code;
