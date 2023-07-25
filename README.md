@@ -79,7 +79,7 @@ Run:
 ```
 podman pull node:18-alpine
 podman build -t mocha -f mocha.dockerfile
-podman build -t nodeserver -f server.dockerfile
+podman build -t nodeserver -f nodeserver.dockerfile
 npm start
 ```
 
