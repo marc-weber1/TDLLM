@@ -5,6 +5,7 @@
   "scripts": {
     "start": "tsc && node ./dist/server.js",
     "build": "tsc",
+    "test": "TS_NODE_TRANSPILE_ONLY=1 PORT=30001 NODE_ENV=test ./node_modules/.bin/mocha --timeout 30000 test/*.ts",
     "lint": "prettier --plugin-search-dir . --check . && eslint .",
     "format": "prettier --plugin-search-dir . --write .",
     "fmt": "pnpm format"
@@ -31,9 +32,13 @@
   "devDependencies": {
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
+    "@types/mocha": "^10.0.1",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
+    "chai": "^4.3.7",
+    "chai-http": "^4.4.0",
     "prettier": "^2.8.8",
+    "ts-mocha": "^10.0.0",
     "typescript": "^5.1.5"
   }
 }

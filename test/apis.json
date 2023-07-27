@@ -1,0 +1,6 @@
+[
+    {
+        "prompt": "Write an expressJS api with a POST endpoint /multiply that takes a body like {'number': 3} and returns a number two times the one given, like {'number': 6}. It should listen on porn 80.",
+        "tests": "const path = require('path');\nconst assert = require('assert');\nconst axios = require('axios');\n\nit('multiplies 6 correctly', () => {\n    axios.post(path.join(server_uri, 'multiply'), {\n        number: 6\n    })\n    .then(function (response) {\n        assert( response.data.number == 12 );\n    })\n});"
+    }
+]

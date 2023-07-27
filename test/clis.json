@@ -1,0 +1,6 @@
+[
+    {
+        "prompt": "Write me a program that generates me a hash of the string provided in the first commandline argument. The string should be encoded in UTF-8, and the hash should be printed to the console as hex code.",
+        "tests": "const crypto = require('crypto');\nconst assert = require('assert');\n\nconst hash = crypto.createHash('sha256');\n\nit('Should generate the hash correctly', async function() {\n    var result = await run('bananas');\n    assert( result.stdout.trim() == hash.update('bananas').digest('hex') );\n});"
+    }
+]

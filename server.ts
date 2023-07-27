@@ -37,6 +37,8 @@ app.use(logger);
 app.use(jsonErrorHandler);
 app.use("/", routes);
 
-app.listen(PORT, "0.0.0.0", () => {
+let server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server listening at http://localhost:${PORT}`);
 });
+
+module.exports = server;

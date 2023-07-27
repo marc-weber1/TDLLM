@@ -3,10 +3,12 @@ import { generate } from "./openai";
 import { ChatCompletionRequestMessage, ChatCompletionRequestMessageRoleEnum } from "openai";
 import { pino } from "pino";
 
+
 const sleep = (ms: number) =>
   new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
+
 
 // Uses MAX_ITERATIONS (number of times it tries to gen)
 const generate_program_with_tests = async (prompt: string, tests: string, log: pino.Logger) => {
@@ -105,6 +107,7 @@ const generate_program_with_tests = async (prompt: string, tests: string, log: p
 
   throw new Error("Max iterations exceeded.");
 };
+
 
 const generate_server_with_tests = async (prompt: string, tests: string, log: pino.Logger) => {
   let messages: ChatCompletionRequestMessage[] = [

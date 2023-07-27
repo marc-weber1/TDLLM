@@ -21,6 +21,7 @@ const transport = pino.transport({
 const logger = pinohttp(
   {
     level: process.env.LOG_LEVEL || 'info',
+    enabled: process.env.NODE_ENV !== 'test'
   },
   transport
 );
